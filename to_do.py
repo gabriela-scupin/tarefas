@@ -1,74 +1,83 @@
 import flet as ft
-from component.campo_tarefas import Campo_tarefa
+from classe_campo_incluir import Campo_incluir
 import sqlite3
 from database.conexao import conectar_bd
 from database.create_database import criar_banco_dados
 from model import model_tarefa
 
+def main(page:ft.Page):
+    page.title = "Armazenamendo de Tarefas"
+    page.bgcolor = "#b4dfd9"
+    page.horizontal_alignment = "center"
+    page.window.width = 800
+    page.window.height = 800
 
-def main(page: ft.Page):
-
-    # Define o título que aparece na janela do programa
-    page.title= "Feito por Gabriela Scúpin" #escrevendo algo na janela
-
-    # Define a cor de fundo da janela
-    page.bgcolor= "#e3c4ff" #alterando a cor da janela
-
-    # Define a altura da janela
-    page.window.height= 800 #alterando a altura da janela
-
-    # Define a largura da janela
-    page.window.width= 700 #alterando a largura da janela
-
-    # Deixa os elementos da página alinhados horizontalmente no centro
-    page.horizontal_alignment= ft.CrossAxisAlignment.CENTER
-
-
-    lista_tarefas= []
     criar_banco_dados()
 
-    def adicionar_tarefa ():
-        model_tarefa.inserir(caixa_tarefas.value)
-        novo_campo = Campo_tarefa(texto_tarefa = caixa_texto.value , 
-                                  funcao_tarefa = excluir_tarefa)
-        lista_tarefas.append(novo_campo)
-        Campo_tarefa.value = ""
-
-    def excluir_tarefa():
-        for campo in lista_tarefas:
-            if campo.caixa_selecao.value == True:
-                lista_tarefas.remove(campo)
+    title = ft.Text(value="Tarefas 📄",size=30,font_family="Arial",)
+    lista_incluir = []
 
 
-    # Cria o título que será mostrado na tela
-    titulo = ft.Text(value="Tarefas da gabisnaga", 
-                          color="#38084B",
-                          size=45,
-                          weight="bold",
-                          font_family="Georgia")
+    def excluir_campo(campo_tarefa):
+        lista_incluir.remove(campo_tarefa)
 
-    caixa_texto = ft.TextField(label="Digite a sua tarefa",
-                                   filled=True)
+
+    def adicionar_campo():
+        model_tarefa.inserir_tarefa(campo_tarefas.value)
+
+        novo_campo = Campo_incluir(texto_tarefa=campo_tarefas.value,
+                                   funcao_excluir=excluir_campo,
+                                   cod_tarefa=cod_tarefa)        
+        lista_incluir.append(novo_campo)
+        
+        campo_tarefas.value = ""    
+         
+    #Recuperando as tarefas do banco de dados e montando os componentes
+    tarefas_vindas_do_banco_de_dados = model_tarefa.recuperar_tarefas()
+    for tarefa in tarefas_vindas_do_banco_de_dados:
+        novo_campo = Campo_incluir(texto_tarefa=tarefa["status"],
+                                   funcao_excluir=excluir_campo,
+                                   cod_tarefa = tarefa["cod_tarefa"])
+        lista_incluir.append(novo_campo)
+
+
+    button_excluir = ft.FloatingActionButton(icon=ft.Icon(ft.Icons.DELETE_FOREVER,
+                                                          color="#000"),
+                                                          bgcolor="#fff",
+                                                          hover_color="#babaca")
+
+    button_incluir = ft.Button(content="Incluir",
+                               on_click=adicionar_campo,)
     
-    botao_adicionar = ft.FloatingActionButton(content= "+",
-                                           bgcolor= "#f0cafa",
-                                           hover_color= "#ffc4d8",
-                                           on_click= adicionar_tarefa )
 
-    caixa_tarefas = ft.Row(controls= [caixa_texto, botao_adicionar],
-                                        alignment= "center")
+    campo_tarefas = ft.TextField(value="",
+                                 label="Tarefas",
+                                 text_align="center",
+                                 on_submit=adicionar_campo)
 
-    coluna_notas= ft.Column(controls=lista_tarefas,
-        expand=True,
-        wrap=True)
+    
+
+    linha_começo = ft.Row(controls=[campo_tarefas, button_incluir],
+                          alignment="center",
+                          spacing=50)
+    
+    container = ft.Container(content=linha_começo,
+                             bgcolor="#FCBAFC",
+                             padding=30,
+                             border_radius=20,
+                             width=550,
+                             height=100)
+
+    coluna_tarefas = ft.Column(controls=lista_incluir,
+                               horizontal_alignment="center")
 
 
-    page.add(titulo)
-    page.add(caixa_tarefas)
-    page.add(coluna_notas)
 
 
 
+    page.controls = [title,container, coluna_tarefas]
+    page.spacing = 45
+    page.update()
 
 ft.run(main)
     
