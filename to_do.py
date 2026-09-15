@@ -30,11 +30,9 @@ def main(page: ft.Page):
     def adicionar_tarefa ():
         model_tarefa.inserir(caixa_tarefas.value)
         novo_campo = Campo_tarefa(texto_tarefa = caixa_texto.value , 
-                                  funcao_tarefa = excluir_tarefa
-        )
+                                  funcao_tarefa = excluir_tarefa)
         lista_tarefas.append(novo_campo)
         Campo_tarefa.value = ""
-
 
     def excluir_tarefa():
         for campo in lista_tarefas:
