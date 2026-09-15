@@ -1,5 +1,10 @@
 import flet as ft
 from component.campo_tarefas import Campo_tarefa
+import sqlite3
+from database.conexao import conectar_bd
+from database.create_database import criar_banco_dados
+from model import model_tarefa
+
 
 def main(page: ft.Page):
 
@@ -18,10 +23,18 @@ def main(page: ft.Page):
     # Deixa os elementos da página alinhados horizontalmente no centro
     page.horizontal_alignment= ft.CrossAxisAlignment.CENTER
 
+
     lista_tarefas= []
+    criar_banco_dados()
 
     def adicionar_tarefa ():
-        lista_tarefas.append(Campo_tarefa())
+        model_tarefa.inserir(caixa_tarefas.value)
+        novo_campo = Campo_tarefa(texto_tarefa = caixa_texto.value , 
+                                  funcao_tarefa = excluir_tarefa
+        )
+        lista_tarefas.append(novo_campo)
+        Campo_tarefa.value = ""
+
 
     def excluir_tarefa():
         for campo in lista_tarefas:
