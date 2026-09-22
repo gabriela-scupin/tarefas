@@ -29,3 +29,17 @@ def deletar_tarefa(codigo_tarefa):
     cursor.execute("""DELETE FROM tarefas
                     WHERE cod_tarefa = 2;""", [codigo_tarefa])
     conexao.close()
+    conexao.commit()
+
+def atualizar_status(codigo_tarefa, novo_status):
+    conexao, cursor = conectar_bd()
+    cursor.execute("""UPDATE FROM tarefas
+                   set status = ?
+                   where cod_tarefa = ?;""", [novo_status, codigo_tarefa])
+    conexao.commit()
+    conexao.close()
+
+def atualizar_tarefa(codigo_tarefa, nova_texto):
+    conexao, cursor = conectar_bd()
+    
+

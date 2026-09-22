@@ -1,4 +1,5 @@
 import flet as ft
+from model import model_tarefa
 
 class Campo_incluir(ft.Row):
     def __init__(self, texto_tarefa, funcao_excluir, cod_tarefa):
@@ -33,8 +34,10 @@ class Campo_incluir(ft.Row):
     def alterar_cor(self):
         if self.caixa_selecao.value == True:
             self.armazem.bgcolor = "#654321"
+            model_tarefa.atualizar_status(self.cod_tarefa, "CONCLUÍDO")
         else:
             self.armazem.bgcolor = "#93DDFF"
+            model_tarefa.atualizar_status(self.cod_tarefa, "PENDENTE")
 
     @property
     def value(self):

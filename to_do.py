@@ -27,7 +27,7 @@ def main(page:ft.Page):
 
         novo_campo = Campo_incluir(texto_tarefa=campo_tarefas.value,
                                    funcao_excluir=excluir_campo,
-                                   cod_tarefa=cod_tarefa)        
+                                   cod_tarefa=model_tarefa)        
         lista_incluir.append(novo_campo)
         
         campo_tarefas.value = ""    
@@ -70,9 +70,6 @@ def main(page:ft.Page):
 
     coluna_tarefas = ft.Column(controls=lista_incluir,
                                horizontal_alignment="center")
-
-
-
 
 
     page.controls = [title,container, coluna_tarefas]
